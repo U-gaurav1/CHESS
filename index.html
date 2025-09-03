@@ -55,26 +55,6 @@
       color: #eee;
       opacity: 0.8;
     }
-    /* Popup styling */
-    #popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 260px;
-      height: 160px;
-      background: white;
-      color: black;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      border-radius: 18px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-      font-size: 20px;
-      font-weight: bold;
-      text-align: center;
-      z-index: 1000;
-    }
   </style>
 </head>
 <body>
@@ -83,7 +63,6 @@
     <div id="status">White to move</div>
   </div>
   <div id="footer">Made with ❤ by GauravU</div>
-  <div id="popup"></div>
 
   <script>
     const EMPTY = null;
@@ -111,7 +90,6 @@
 
     const boardDiv = document.getElementById("board");
     const statusDiv = document.getElementById("status");
-    const popupDiv = document.getElementById("popup");
 
     function inBounds(i){ return i >= 0 && i < 64; }
     function rank(i){ return Math.floor(i / 8); }
@@ -216,16 +194,6 @@
       return legal;
     }
 
-    function hasAnyLegalMoves(pos){
-      for(let i=0;i<64;i++){
-        const p = pos.board[i];
-        if(p && p[0]===pos.turn){
-          if(genLegalMoves(pos,i).length>0) return true;
-        }
-      }
-      return false;
-    }
-
     function render(){
       boardDiv.innerHTML = "";
       for (let i = 0; i < 64; i++) {
@@ -267,7 +235,6 @@
         selected = null;
         legalMoves = [];
         render();
-        checkGameOver();
       }
     });
 
@@ -277,26 +244,6 @@
         const sq = boardDiv.children[m.to];
         sq.classList.add("highlight");
       }
-    }
-
-    function checkGameOver(){
-      const color = G.turn;
-      const ksq = kingSquare(G, color);
-      const inCheck = isSquareAttacked(G, ksq, color==="w"?"b":"w");
-      const anyMoves = hasAnyLegalMoves(G);
-
-      if(!anyMoves){
-        if(inCheck){
-          showPopup("CHECKMATE! " + (color==="w"?"Black":"White") + " wins");
-        } else {
-          showPopup("STALEMATE! Draw");
-        }
-      }
-    }
-
-    function showPopup(msg){
-      popupDiv.textContent = msg;
-      popupDiv.style.display = "flex";
     }
 
     render();
